@@ -7,6 +7,7 @@ let nikeCount = 0;
 let adidasCount = 0;
 let newGame = document.getElementById("new-game");
 let header = document.getElementById("game-status");
+let giveUp = document.getElementById("give-up");
 window.addEventListener("DOMContentLoaded", (event) => {
   grid.addEventListener("click", (event) => {
     const eventTarget = event.target.id;
@@ -30,6 +31,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
   });
   newGame.addEventListener("click", (event) => {
     endGame();
+  });
+  giveUp.addEventListener("click", (event) => {
+    header.innerHTML = `Winner is ${currentPlayerSymbol}`;
+    setTimeout(function () {
+      endGame();
+    }, 1500);
   });
 });
 
@@ -119,8 +126,10 @@ function checkGameStatus() {
   if (gameStatus !== "") {
     header.innerHTML = gameStatus;
     newGame.disabled = false;
+    giveUp.disabled = true;
   } else {
     newGame.disabled = true;
+    giveUp.disabled = false;
   }
 }
 
