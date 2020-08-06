@@ -8,25 +8,36 @@ let adidasCount = 0;
 let newGame = document.getElementById("new-game");
 let header = document.getElementById("game-status");
 let giveUp = document.getElementById("give-up");
+let resetScore = document.getElementById("reset-score");
+let key = "tic-tac-toe-gamestate";
 window.addEventListener("DOMContentLoaded", (event) => {
+  loadSave();
   grid.addEventListener("click", (event) => {
-    const eventTarget = event.target.id;
-    // console.log(eventTarget);
-    if (eventTarget.startsWith("square-")) {
-      const squareNum = eventTarget.slice(7);
-      const parsedNum = Number.parseInt(squareNum);
-      if (squareValues[parsedNum] === "") {
-        if (count % 2 !== 0) {
-          playNike(parsedNum);
-        } else {
-          playAdidas(parsedNum);
+    newGame.disabled = true;
+    saveState();
+    if (gameStatus === "") {
+      const eventTarget = event.target.id;
+      // console.log(eventTarget);
+      if (eventTarget.startsWith("square-")) {
+        const squareNum = eventTarget.slice(7);
+        const parsedNum = Number.parseInt(squareNum);
+        if (squareValues[parsedNum] === "") {
+          if (count % 2 !== 0) {
+            playNike(parsedNum);
+            saveState();
+          } else {
+            playAdidas(parsedNum);
+            saveState();
+          }
         }
+        count++;
+        console.log(currentPlayerSymbol);
+        checkWin();
+        checkTie();
+        checkGameStatus();
+        scoreUpdate();
       }
-      count++;
-      console.log(currentPlayerSymbol);
-      checkWin();
-      checkTie();
-      checkGameStatus();
+      saveState();
     }
   });
   newGame.addEventListener("click", (event) => {
@@ -38,17 +49,77 @@ window.addEventListener("DOMContentLoaded", (event) => {
       endGame();
     }, 1500);
   });
+  resetScore.addEventListener("click", (event) => {
+    scoreReset();
+  });
 });
 
+function saveState() {
+  let value = {
+    currentPlayerSymbolSave: currentPlayerSymbol,
+    boardSave: squareValues,
+    gameStatusSave: gameStatus,
+    nikeCountSave: nikeCount,
+    adidasCountSave: adidasCount,
+  };
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function loadSave() {
+  let save = localStorage.getItem(key);
+  if (save === null) {
+    return;
+  }
+  let load = JSON.parse(save);
+  currentPlayerSymbol = load.currentPlayerSymbolSave;
+  squareValues = load.boardSave;
+  gameStatus = load.gameStatusSave;
+  nikeCount = load.nikeCountSave;
+  adidasCount = load.adidasCountSave;
+  for (let i = 0; i < 9; i++) {
+    let square = document.getElementById(`square-${i}`);
+    if (squareValues[i] !== "") {
+      if (squareValues[i] === "nike") {
+        const nikeImg = document.createElement("img");
+        nikeImg.setAttribute("src", "nike.png");
+        nikeImg.setAttribute("id", "nike-image");
+        nikeImg.setAttribute("class", "nike");
+        square.appendChild(nikeImg);
+      } else {
+        const adidasImg = document.createElement("img");
+        adidasImg.setAttribute("src", "adidas.png");
+        adidasImg.setAttribute("id", "adidas-image");
+        adidasImg.setAttribute("class", "adidas");
+        square.appendChild(adidasImg);
+      }
+    }
+    checkGameStatus();
+  }
+}
+
+function scoreUpdate() {
+  let nikeScore = document.getElementById("nike-score");
+  let adidasScore = document.getElementById("adidas-score");
+  nikeScore.innerHTML = `NIKE: ${nikeCount}`;
+  adidasScore.innerHTML = `ADIDAS: ${adidasCount}`;
+}
+
+function scoreReset() {
+  let nikeScore = document.getElementById("nike-score");
+  let adidasScore = document.getElementById("adidas-score");
+  nikeScore.innerHTML = "NIKE: 0";
+  adidasScore.innerHTML = "ADIDAS: 0";
+}
+
 function endGame() {
-  let currentPlayerSymbol = "nike";
-  let squareValues = ["", "", "", "", "", "", "", "", ""];
-  let gameStatus = "";
+  currentPlayerSymbol = "nike";
+  squareValues = ["", "", "", "", "", "", "", "", ""];
+  gameStatus = "";
   count = 1;
   header.innerHTML = "";
-  for (let i = 0; i <= 8; i++) {
-    let squareX = document.getElementById(`square-${i}`);
-    squareX.innerHTML = "";
+  for (let i = 0; i < 9; i++) {
+    let square = document.getElementById(`square-${i}`);
+    square.innerHTML = "";
   }
 }
 function checkRows() {
