@@ -1,7 +1,10 @@
+let gameStatus = "";
 let count = 1;
 let currentPlayerSymbol = "nike";
 let squareValues = ["", "", "", "", "", "", "", "", ""];
 let grid = document.getElementById("tic-tac-toe-board");
+let nikeCount = 0;
+let adidasCount = 0;
 window.addEventListener("DOMContentLoaded", (event) => {
   grid.addEventListener("click", (event) => {
     const eventTarget = event.target.id;
@@ -18,9 +21,89 @@ window.addEventListener("DOMContentLoaded", (event) => {
       }
       count++;
       console.log(currentPlayerSymbol);
+      checkWin();
+      checkTie();
+      checkGameStatus();
     }
   });
 });
+
+function checkRows() {
+  if (
+    (squareValues[0] === squareValues[1] &&
+      squareValues[1] === squareValues[2] &&
+      squareValues[2] !== "") ||
+    (squareValues[3] === squareValues[4] &&
+      squareValues[4] === squareValues[5] &&
+      squareValues[5] !== "") ||
+    (squareValues[6] === squareValues[7] &&
+      squareValues[7] === squareValues[8] &&
+      squareValues[8] !== "")
+  ) {
+    gameStatus = `WINNER: ${currentPlayerSymbol}`;
+    return true;
+  }
+}
+
+function checkColumns() {
+  if (
+    (squareValues[0] === squareValues[3] &&
+      squareValues[3] === squareValues[6] &&
+      squareValues[6] !== "") ||
+    (squareValues[1] === squareValues[4] &&
+      squareValues[4] === squareValues[7] &&
+      squareValues[7] !== "") ||
+    (squareValues[2] === squareValues[5] &&
+      squareValues[5] === squareValues[8] &&
+      squareValues[8] !== "")
+  ) {
+    gameStatus = `WINNER: ${currentPlayerSymbol}`;
+    return true;
+  }
+}
+
+function checkDiag() {
+  if (
+    (squareValues[0] === squareValues[4] &&
+      squareValues[4] === squareValues[8] &&
+      squareValues[8] !== "") ||
+    (squareValues[2] === squareValues[4] &&
+      squareValues[4] === squareValues[6] &&
+      squareValues[6] !== "")
+  ) {
+    gameStatus = `WINNER: ${currentPlayerSymbol}`;
+    return true;
+  }
+}
+
+function checkTie() {
+  if (
+    !checkRows() &&
+    !checkDiag() &&
+    !checkColumns() &&
+    !squareValues.includes("")
+  ) {
+    gameStatus = "IT'S A TIE";
+  }
+}
+
+function checkWin() {
+  console.log(checkRows() || checkDiag() || checkColumns() === true);
+  if (checkRows() || checkDiag() || checkColumns()) {
+    gameStatus = `WINNER: ${currentPlayerSymbol}`;
+    if (currentPlayerSymbol === "NIKE") {
+      nikeCount++;
+    } else {
+      adidasCount++;
+    }
+  }
+}
+
+function checkGameStatus() {
+  if (gameStatus !== "") {
+    document.getElementById("game-status").innerHTML = gameStatus;
+  }
+}
 
 function playNike(num) {
   const nikeImg = document.createElement("img");
