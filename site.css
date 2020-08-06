@@ -1,4 +1,5 @@
-body, button {
+body,
+button {
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -60,6 +61,16 @@ button {
 
 .square {
   background-color: white;
+  height: 130px;
+  width: 130px;
+}
+
+#nike-image {
+  height: 130px;
+  width: 130px;
+}
+
+#adidas-image {
   height: 130px;
   width: 130px;
 }
