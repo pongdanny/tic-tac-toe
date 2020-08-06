@@ -5,6 +5,8 @@ let squareValues = ["", "", "", "", "", "", "", "", ""];
 let grid = document.getElementById("tic-tac-toe-board");
 let nikeCount = 0;
 let adidasCount = 0;
+let newGame = document.getElementById("new-game");
+let header = document.getElementById("game-status");
 window.addEventListener("DOMContentLoaded", (event) => {
   grid.addEventListener("click", (event) => {
     const eventTarget = event.target.id;
@@ -26,8 +28,22 @@ window.addEventListener("DOMContentLoaded", (event) => {
       checkGameStatus();
     }
   });
+  newGame.addEventListener("click", (event) => {
+    endGame();
+  });
 });
 
+function endGame() {
+  let currentPlayerSymbol = "nike";
+  let squareValues = ["", "", "", "", "", "", "", "", ""];
+  let gameStatus = "";
+  count = 1;
+  header.innerHTML = "";
+  for (let i = 0; i <= 8; i++) {
+    let squareX = document.getElementById(`square-${i}`);
+    squareX.innerHTML = "";
+  }
+}
 function checkRows() {
   if (
     (squareValues[0] === squareValues[1] &&
@@ -101,7 +117,10 @@ function checkWin() {
 
 function checkGameStatus() {
   if (gameStatus !== "") {
-    document.getElementById("game-status").innerHTML = gameStatus;
+    header.innerHTML = gameStatus;
+    newGame.disabled = false;
+  } else {
+    newGame.disabled = true;
   }
 }
 
