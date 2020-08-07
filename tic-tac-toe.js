@@ -9,7 +9,7 @@ let newGame = document.getElementById("new-game");
 let header = document.getElementById("game-status");
 let giveUp = document.getElementById("give-up");
 let resetScore = document.getElementById("reset-score");
-let key = "tic-tac-toe-gamestate";
+let gameState = document.getElementById("tic-tac-toe-gamestate");
 window.addEventListener("DOMContentLoaded", (event) => {
   loadSave();
   grid.addEventListener("click", (event) => {
@@ -45,12 +45,21 @@ window.addEventListener("DOMContentLoaded", (event) => {
   });
   giveUp.addEventListener("click", (event) => {
     header.innerHTML = `Winner is ${currentPlayerSymbol}`;
+    if (currentPlayerSymbol === "NIKE") {
+      nikeCount++;
+      scoreUpdate();
+    } else {
+      adidasCount++;
+      scoreUpdate();
+    }
+
     setTimeout(function () {
       endGame();
     }, 1500);
   });
   resetScore.addEventListener("click", (event) => {
     scoreReset();
+    endGame();
   });
 });
 
@@ -62,11 +71,11 @@ function saveState() {
     nikeCountSave: nikeCount,
     adidasCountSave: adidasCount,
   };
-  localStorage.setItem(key, JSON.stringify(value));
+  localStorage.setItem(gameState, JSON.stringify(value));
 }
 
 function loadSave() {
-  let save = localStorage.getItem(key);
+  let save = localStorage.getItem(gameState);
   if (save === null) {
     return;
   }
@@ -107,8 +116,8 @@ function scoreUpdate() {
 function scoreReset() {
   let nikeScore = document.getElementById("nike-score");
   let adidasScore = document.getElementById("adidas-score");
-  nikeScore.innerHTML = "NIKE: 0";
-  adidasScore.innerHTML = "ADIDAS: 0";
+  nikeScore.innerHTML = `NIKE: 0`;
+  adidasScore.innerHTML = `ADIDAS: 0`;
 }
 
 function endGame() {
